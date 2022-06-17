@@ -45,4 +45,8 @@ public class CourseOffering {
 			unitsRequested += o.getCourse().getUnits();
 		return unitsRequested;
 	}
+
+	public boolean hasExamTimeConflict(CourseOffering otherCourse) {
+		return this.getExamTime().equals(otherCourse.getExamTime());
+	}
 }
