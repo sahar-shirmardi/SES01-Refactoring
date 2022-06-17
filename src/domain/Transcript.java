@@ -12,9 +12,6 @@ public class Transcript {
         this.transcript = new HashMap<>();
     }
 
-    public Map<Term, StudentTerm> getTerms() {
-        return transcript;
-    }
 
     public void addTakenCourseToTerm(Course course, Term term, double grade) {
         if (!transcript.containsKey(term))
