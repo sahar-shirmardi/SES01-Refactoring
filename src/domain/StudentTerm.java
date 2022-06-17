@@ -17,4 +17,24 @@ public class StudentTerm {
     public List<TakenCourse> getTakenCourses() {
         return takenCourses;
     }
+
+    public int getUnits() {
+        int units = 0;
+        for(TakenCourse takenCourse : takenCourses) {
+            if (takenCourse.status == TakenCourseStatus.GRADED) {
+                units += takenCourse.getCourse().getUnits();
+            }
+        }
+        return units;
+    }
+
+    public double getWeightedSumOfGrades() {
+        double sum = 0;
+        for(TakenCourse takenCourse : takenCourses) {
+            if (takenCourse.status == TakenCourseStatus.GRADED) {
+                sum += takenCourse.getGrade() * takenCourse.getCourse().getUnits();
+            }
+        }
+        return sum;
+    }
 }

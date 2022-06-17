@@ -8,14 +8,13 @@ public class Student {
 	private String id;
 	private String name;
 
-
-	private Map<Term, Map<Course, Double>> transcript;
+	private Transcript transcript;
 	private StudentTerm currentTerm;
 
 	public Student(String id, String name) {
 		this.id = id;
 		this.name = name;
-		this.transcript = new HashMap<>();
+		this.transcript = new Transcript();
 		this.currentTerm = new StudentTerm();
 	}
 	
@@ -23,26 +22,16 @@ public class Student {
 		currentTerm.addTakenCourse(new TakenCourse(c, section));
 	}
 
-	public Map<Term, Map<Course, Double>> getTranscript() {
+	public Transcript getTranscript() {
 		return transcript;
 	}
 
 	public void addTranscriptRecord(Course course, Term term, double grade) {
-	    if (!transcript.containsKey(term))
-	        transcript.put(term, new HashMap<>());
-	    transcript.get(term).put(course, grade);
+		transcript.addTakenCourseToTerm(course, term, grade);
     }
 
     public double getGPA() {
-		double points = 0;
-		int totalUnits = 0;
-		for (Map.Entry<Term, Map<Course, Double>> tr : transcript.entrySet()) {
-			for (Map.Entry<Course, Double> r : tr.getValue().entrySet()) {
-				points += r.getValue() * r.getKey().getUnits();
-				totalUnits += r.getKey().getUnits();
-			}
-		}
-		return points / totalUnits;
+		return transcript.getGPA();
 	}
 
     public StudentTerm getCurrentTerm() {

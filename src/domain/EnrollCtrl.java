@@ -9,20 +9,20 @@ import static domain.CourseOffering.getUnitsRequested;
 
 public class EnrollCtrl {
     public static void enroll(Student s, List<CourseOffering> courses) throws EnrollmentRulesViolationException {
-        Map<Term, Map<Course, Double>> transcript = s.getTranscript();
+        Transcript transcript = s.getTranscript();
         for (CourseOffering o : courses) {
-            for (Map.Entry<Term, Map<Course, Double>> tr : transcript.entrySet()) {
-                for (Map.Entry<Course, Double> r : tr.getValue().entrySet()) {
-                    if (r.getKey().equals(o.getCourse()) && r.getValue() >= 10)
+            for (Map.Entry<Term, StudentTerm> tr : transcript.getTerms().entrySet()) {
+                for (TakenCourse r : tr.getValue().getTakenCourses()) {
+                    if (r.getCourse().equals(o.getCourse()) && r.getGrade() >= 10)
                         throw new EnrollmentRulesViolationException(String.format("The student has already passed %s", o.getCourse().getName()));
                 }
             }
             List<Course> prereqs = o.getCourse().getPrerequisites();
             nextPre:
             for (Course pre : prereqs) {
-                for (Map.Entry<Term, Map<Course, Double>> tr : transcript.entrySet()) {
-                    for (Map.Entry<Course, Double> r : tr.getValue().entrySet()) {
-                        if (r.getKey().equals(pre) && r.getValue() >= 10)
+                for (Map.Entry<Term, StudentTerm> tr : transcript.getTerms().entrySet()) {
+                    for (TakenCourse r : tr.getValue().getTakenCourses()) {
+                        if (r.getCourse().equals(pre) && r.getGrade() >= 10)
                             continue nextPre;
                     }
                 }
