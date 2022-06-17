@@ -1,7 +1,6 @@
 package domain;
 
 import java.util.List;
-import java.util.Map;
 
 import domain.exceptions.EnrollmentRulesViolationException;
 
@@ -10,20 +9,8 @@ import static domain.CourseOffering.getUnitsRequested;
 public class EnrollmentController {
     public static void enroll(Student s, List<CourseOffering> courses) throws EnrollmentRulesViolationException {
         Transcript transcript = s.getTranscript();
-        checkAlreadyPassedCourses(courses, s.getTranscript());
-        for (CourseOffering o : courses) {
-            List<Course> prereqs = o.getCourse().getPrerequisites();
-            nextPre:
-            for (Course pre : prereqs) {
-                for (Map.Entry<Term, StudentTerm> tr : transcript.getTerms().entrySet()) {
-                    for (TakenCourse r : tr.getValue().getTakenCourses()) {
-                        if (r.getCourse().equals(pre) && r.getGrade() >= 10)
-                            continue nextPre;
-                    }
-                }
-                throw new EnrollmentRulesViolationException(String.format("The student has not passed %s as a prerequisite of %s", pre.getName(), o.getCourse().getName()));
-            }
-        }
+        checkAlreadyPassedCourses(courses, transcript);
+        checkRequirements(courses, transcript);
         checkDuplicateEnrollRequest(courses);
         for (CourseOffering o : courses) {
             for (CourseOffering o2 : courses) {
@@ -38,9 +25,18 @@ public class EnrollmentController {
             s.takeCourse(o.getCourse(), o.getSection());
     }
 
+    private static void checkRequirements(List<CourseOffering> courses, Transcript transcript) throws EnrollmentRulesViolationException {
+        for (CourseOffering o : courses) {
+            List<Course> prereqs = o.getCourse().getPrerequisites();
+            for (Course pre : prereqs)
+                if(!transcript.hasPassed(pre))
+                    throw new EnrollmentRulesViolationException(String.format("The student has not passed %s as a prerequisite of %s", pre.getName(), o.getCourse().getName()));
+        }
+    }
+
     private static void checkAlreadyPassedCourses(List<CourseOffering> courses, Transcript transcript) throws EnrollmentRulesViolationException {
         for (CourseOffering o : courses)
-            if (transcript.hasPassed(o))
+            if (transcript.hasPassed(o.getCourse()))
                 throw new EnrollmentRulesViolationException(String.format("The student has already passed %s", o.getCourse().getName()));
 
     }
