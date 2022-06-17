@@ -38,7 +38,7 @@ public class StudentTerm {
 
     public boolean passedCourse(Course course) {
         for (TakenCourse takenCourse : takenCourses)
-            if(takenCourse.getCourse().equals(course) && takenCourse.getGrade() >= 10)
+            if(takenCourse.getCourse().equals(course) && takenCourse.hasPassed())
                 return true;
 
         return false;
