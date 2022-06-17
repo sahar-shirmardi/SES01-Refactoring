@@ -7,7 +7,7 @@ import domain.exceptions.EnrollmentRulesViolationException;
 
 import static domain.CourseOffering.getUnitsRequested;
 
-public class EnrollCtrl {
+public class EnrollmentController {
     public static void enroll(Student s, List<CourseOffering> courses) throws EnrollmentRulesViolationException {
         Transcript transcript = s.getTranscript();
         for (CourseOffering o : courses) {
