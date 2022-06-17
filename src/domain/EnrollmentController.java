@@ -39,15 +39,10 @@ public class EnrollmentController {
     }
 
     private static void checkAlreadyPassedCourses(List<CourseOffering> courses, Transcript transcript) throws EnrollmentRulesViolationException {
-        for (CourseOffering o : courses) {
+        for (CourseOffering o : courses)
+            if (transcript.hasPassed(o))
+                throw new EnrollmentRulesViolationException(String.format("The student has already passed %s", o.getCourse().getName()));
 
-            for (Map.Entry<Term, StudentTerm> tr : transcript.getTerms().entrySet()) {
-                for (TakenCourse r : tr.getValue().getTakenCourses()) {
-                    if (r.getCourse().equals(o.getCourse()) && r.getGrade() >= 10)
-                        throw new EnrollmentRulesViolationException(String.format("The student has already passed %s", o.getCourse().getName()));
-                }
-            }
-        }
     }
 
     private static void checkDuplicateEnrollRequest(List<CourseOffering> courses) throws EnrollmentRulesViolationException {

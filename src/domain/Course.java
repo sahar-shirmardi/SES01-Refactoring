@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Course {
+	final static double MINIMUM_GRADE_TO_PASS = 10;
+
 	private String id;
 	private String name;
 	private int units;

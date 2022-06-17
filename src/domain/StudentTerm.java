@@ -36,9 +36,9 @@ public class StudentTerm {
         return sum;
     }
 
-    public boolean hasCourse(Course course) {
+    public boolean passedCourse(Course course) {
         for (TakenCourse takenCourse : takenCourses)
-            if(takenCourse.getCourse().equals(course))
+            if(takenCourse.getCourse().equals(course) && takenCourse.getGrade() >= 10)
                 return true;
 
         return false;

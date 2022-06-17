@@ -29,4 +29,8 @@ public class TakenCourse {
     public double getGrade() {
         return grade;
     }
+
+    public boolean hasPassed() {
+        return status == TakenCourseStatus.GRADED && grade >= Course.MINIMUM_GRADE_TO_PASS;
+    }
 }
