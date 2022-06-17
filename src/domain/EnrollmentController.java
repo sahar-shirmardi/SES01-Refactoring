@@ -12,17 +12,21 @@ public class EnrollmentController {
         checkAlreadyPassedCourses(courses, transcript);
         checkRequirements(courses, transcript);
         checkDuplicateEnrollRequest(courses);
+        checkExamTimeConflicts(courses);
+        checkUnitsLimit(s, courses);
+        for (CourseOffering o : courses)
+            s.takeCourse(o.getCourse(), o.getSection());
+    }
+
+    private static void checkExamTimeConflicts(List<CourseOffering> courses) throws EnrollmentRulesViolationException {
         for (CourseOffering o : courses) {
             for (CourseOffering o2 : courses) {
                 if (o == o2)
                     continue;
-                if (o.getExamTime().equals(o2.getExamTime()))
+                if (o.hasExamTimeConflict(o2))
                     throw new EnrollmentRulesViolationException(String.format("Two offerings %s and %s have the same exam time", o, o2));
             }
         }
-        checkUnitsLimit(s, courses);
-        for (CourseOffering o : courses)
-            s.takeCourse(o.getCourse(), o.getSection());
     }
 
     private static void checkRequirements(List<CourseOffering> courses, Transcript transcript) throws EnrollmentRulesViolationException {
