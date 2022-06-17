@@ -1,5 +1,6 @@
 package domain;
 import java.util.Date;
+import java.util.List;
 
 public class CSE {
 	private Course course;
@@ -37,4 +38,12 @@ public class CSE {
 	}
 
 	public int getSection() { return section; }
+	
+	
+	public static int getUnitsRequested(List<CSE> courses) {
+		int unitsRequested = 0;
+		for (CSE o : courses)
+			unitsRequested += o.getCourse().getUnits();
+		return unitsRequested;
+	}
 }
