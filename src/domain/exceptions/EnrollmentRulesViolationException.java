@@ -1,9 +1,12 @@
 package domain.exceptions;
 
-public class EnrollmentRulesViolationException extends Exception {
+import java.util.ArrayList;
+import java.util.List;
 
-	public EnrollmentRulesViolationException(String msg) {
-		super(msg);
+public class EnrollmentRulesViolationException extends Exception {
+	private List<String> errors;
+	public EnrollmentRulesViolationException(ArrayList<String> errors){
+		this.errors = errors;
 	}
 
 }
