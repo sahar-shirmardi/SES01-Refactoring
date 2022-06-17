@@ -4,12 +4,13 @@ import java.util.List;
 import java.util.Map;
 
 import domain.exceptions.EnrollmentRulesViolationException;
-import static domain.CSE.getUnitsRequested;
+
+import static domain.CourseOffering.getUnitsRequested;
 
 public class EnrollCtrl {
-    public static void enroll(Student s, List<CSE> courses) throws EnrollmentRulesViolationException {
+    public static void enroll(Student s, List<CourseOffering> courses) throws EnrollmentRulesViolationException {
         Map<Term, Map<Course, Double>> transcript = s.getTranscript();
-        for (CSE o : courses) {
+        for (CourseOffering o : courses) {
             for (Map.Entry<Term, Map<Course, Double>> tr : transcript.entrySet()) {
                 for (Map.Entry<Course, Double> r : tr.getValue().entrySet()) {
                     if (r.getKey().equals(o.getCourse()) && r.getValue() >= 10)
@@ -29,8 +30,8 @@ public class EnrollCtrl {
             }
         }
         checkDuplicateEnrollRequest(courses);
-        for (CSE o : courses) {
-            for (CSE o2 : courses) {
+        for (CourseOffering o : courses) {
+            for (CourseOffering o2 : courses) {
                 if (o == o2)
                     continue;
                 if (o.getExamTime().equals(o2.getExamTime()))
@@ -38,13 +39,13 @@ public class EnrollCtrl {
             }
         }
         checkUnitsLimit(s, courses);
-        for (CSE o : courses)
+        for (CourseOffering o : courses)
             s.takeCourse(o.getCourse(), o.getSection());
     }
 
-    private static void checkDuplicateEnrollRequest(List<CSE> courses) throws EnrollmentRulesViolationException {
-        for (CSE o : courses) {
-            for (CSE o2 : courses) {
+    private static void checkDuplicateEnrollRequest(List<CourseOffering> courses) throws EnrollmentRulesViolationException {
+        for (CourseOffering o : courses) {
+            for (CourseOffering o2 : courses) {
                 if (o == o2)
                     continue;
                 if (o.getCourse().equals(o2.getCourse()))
@@ -53,7 +54,7 @@ public class EnrollCtrl {
         }
     }
 
-    private static void checkUnitsLimit(Student s, List<CSE> courses) throws EnrollmentRulesViolationException {
+    private static void checkUnitsLimit(Student s, List<CourseOffering> courses) throws EnrollmentRulesViolationException {
         if ((s.getGPA() < 12 && getUnitsRequested(courses) > 14) ||
                 (s.getGPA() < 16 && getUnitsRequested(courses) > 16) ||
                 (getUnitsRequested(courses) > 20))
