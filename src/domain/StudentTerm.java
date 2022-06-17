@@ -21,16 +21,17 @@ public class StudentTerm {
     public int getUnits() {
         int units = 0;
         for (TakenCourse takenCourse : takenCourses)
-            if (takenCourse.status == TakenCourseStatus.GRADED)
+            if (takenCourse.getStatus() == TakenCourseStatus.GRADED)
                 units += takenCourse.getCourse().getUnits();
 
         return units;
     }
 
+
     public double getWeightedSumOfGrades() {
         double sum = 0;
         for (TakenCourse takenCourse : takenCourses)
-            if (takenCourse.status == TakenCourseStatus.GRADED)
+            if (takenCourse.getStatus() == TakenCourseStatus.GRADED)
                 sum += takenCourse.getGrade() * takenCourse.getCourse().getUnits();
 
         return sum;

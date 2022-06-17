@@ -5,8 +5,8 @@ public class TakenCourse {
     private Course course;
     private int section;
 
-    TakenCourseStatus status;
-    double grade;
+    private TakenCourseStatus status;
+    private double grade;
 
     TakenCourse(Course course, int section) {
         this.course = course;
@@ -22,6 +22,7 @@ public class TakenCourse {
         this.grade = grade;
     }
 
+    public TakenCourseStatus getStatus(){ return status; }
     public Course getCourse() {
         return course;
     }
