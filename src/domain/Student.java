@@ -8,26 +8,19 @@ public class Student {
 	private String id;
 	private String name;
 
-	static class CourseSection {
-        CourseSection(Course course, int section) {
-            this.course = course;
-            this.section = section;
-        }
-        Course course;
-	    int section;
-    }
+
 	private Map<Term, Map<Course, Double>> transcript;
-	private List<CourseSection> currentTerm;
+	private StudentTerm currentTerm;
 
 	public Student(String id, String name) {
 		this.id = id;
 		this.name = name;
 		this.transcript = new HashMap<>();
-		this.currentTerm = new ArrayList<>();
+		this.currentTerm = new StudentTerm();
 	}
 	
 	public void takeCourse(Course c, int section) {
-		currentTerm.add(new CourseSection(c, section));
+		currentTerm.addTakenCourse(new TakenCourse(c, section));
 	}
 
 	public Map<Term, Map<Course, Double>> getTranscript() {
@@ -39,7 +32,7 @@ public class Student {
 	        transcript.put(term, new HashMap<>());
 	    transcript.get(term).put(course, grade);
     }
-	
+
     public double getGPA() {
 		double points = 0;
 		int totalUnits = 0;
@@ -51,8 +44,8 @@ public class Student {
 		}
 		return points / totalUnits;
 	}
-	
-    public List<CourseSection> getCurrentTerm() {
+
+    public StudentTerm getCurrentTerm() {
         return currentTerm;
     }
 
