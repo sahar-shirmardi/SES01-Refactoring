@@ -9,7 +9,7 @@ public class CourseOffering {
 
 	public CourseOffering(Course course) {
 		this.course = course;
-		this.section = 1;
+		this.section = Constants.DEFAULT_SECTION;
 		this.examDate = null;
 	}
 

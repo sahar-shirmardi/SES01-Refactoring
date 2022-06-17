@@ -7,61 +7,61 @@ import domain.exceptions.EnrollmentRulesViolationException;
 import static domain.CourseOffering.getUnitsRequested;
 
 public class EnrollmentController {
-    public static void enroll(Student s, List<CourseOffering> courses) throws EnrollmentRulesViolationException {
-        Transcript transcript = s.getTranscript();
-        checkAlreadyPassedCourses(courses, transcript);
-        checkRequirements(courses, transcript);
-        checkDuplicateEnrollRequest(courses);
-        checkExamTimeConflicts(courses);
-        checkUnitsLimit(s, courses);
-        for (CourseOffering o : courses)
-            s.takeCourse(o.getCourse(), o.getSection());
+    public static void enroll(Student student, List<CourseOffering> courseOfferings) throws EnrollmentRulesViolationException {
+        Transcript transcript = student.getTranscript();
+        checkAlreadyPassedCourses(courseOfferings, transcript);
+        checkRequirements(courseOfferings, transcript);
+        checkDuplicateEnrollRequest(courseOfferings);
+        checkExamTimeConflicts(courseOfferings);
+        checkUnitsLimit(student, courseOfferings);
+        for (CourseOffering courseOffering : courseOfferings)
+            student.takeCourse(courseOffering.getCourse(), courseOffering.getSection());
     }
 
-    private static void checkExamTimeConflicts(List<CourseOffering> courses) throws EnrollmentRulesViolationException {
-        for (CourseOffering o : courses) {
-            for (CourseOffering o2 : courses) {
-                if (o == o2)
+    private static void checkExamTimeConflicts(List<CourseOffering> courseOfferings) throws EnrollmentRulesViolationException {
+        for (CourseOffering courseOffering : courseOfferings) {
+            for (CourseOffering courseOffering1 : courseOfferings) {
+                if (courseOffering == courseOffering1)
                     continue;
-                if (o.hasExamTimeConflict(o2))
-                    throw new EnrollmentRulesViolationException(String.format("Two offerings %s and %s have the same exam time", o, o2));
+                if (courseOffering.hasExamTimeConflict(courseOffering1))
+                    throw new EnrollmentRulesViolationException(String.format("Two offerings %s and %s have the same exam time", courseOffering, courseOffering1));
             }
         }
     }
 
-    private static void checkRequirements(List<CourseOffering> courses, Transcript transcript) throws EnrollmentRulesViolationException {
-        for (CourseOffering o : courses) {
-            List<Course> prereqs = o.getCourse().getPrerequisites();
+    private static void checkRequirements(List<CourseOffering> courseOfferings, Transcript transcript) throws EnrollmentRulesViolationException {
+        for (CourseOffering courseOffering : courseOfferings) {
+            List<Course> prereqs = courseOffering.getCourse().getPrerequisites();
             for (Course pre : prereqs)
                 if(!transcript.hasPassed(pre))
-                    throw new EnrollmentRulesViolationException(String.format("The student has not passed %s as a prerequisite of %s", pre.getName(), o.getCourse().getName()));
+                    throw new EnrollmentRulesViolationException(String.format("The student has not passed %s as a prerequisite of %s", pre.getName(), courseOffering.getCourse().getName()));
         }
     }
 
-    private static void checkAlreadyPassedCourses(List<CourseOffering> courses, Transcript transcript) throws EnrollmentRulesViolationException {
-        for (CourseOffering o : courses)
-            if (transcript.hasPassed(o.getCourse()))
-                throw new EnrollmentRulesViolationException(String.format("The student has already passed %s", o.getCourse().getName()));
+    private static void checkAlreadyPassedCourses(List<CourseOffering> courseOfferings, Transcript transcript) throws EnrollmentRulesViolationException {
+        for (CourseOffering courseOffering : courseOfferings)
+            if (transcript.hasPassed(courseOffering.getCourse()))
+                throw new EnrollmentRulesViolationException(String.format("The student has already passed %s", courseOffering.getCourse().getName()));
 
     }
 
-    private static void checkDuplicateEnrollRequest(List<CourseOffering> courses) throws EnrollmentRulesViolationException {
-        for (CourseOffering o : courses) {
-            for (CourseOffering o2 : courses) {
-                if (o == o2)
+    private static void checkDuplicateEnrollRequest(List<CourseOffering> courseOfferings) throws EnrollmentRulesViolationException {
+        for (CourseOffering courseOffering : courseOfferings) {
+            for (CourseOffering courseOffering1 : courseOfferings) {
+                if (courseOffering == courseOffering1)
                     continue;
-                if (o.getCourse().equals(o2.getCourse()))
-                    throw new EnrollmentRulesViolationException(String.format("%s is requested to be taken twice", o.getCourse().getName()));
+                if (courseOffering.getCourse().equals(courseOffering1.getCourse()))
+                    throw new EnrollmentRulesViolationException(String.format("%s is requested to be taken twice", courseOffering.getCourse().getName()));
             }
         }
     }
 
-    private static void checkUnitsLimit(Student s, List<CourseOffering> courses) throws EnrollmentRulesViolationException {
-        if ((s.getGPA() < 12 && getUnitsRequested(courses) > 14) ||
-                (s.getGPA() < 16 && getUnitsRequested(courses) > 16) ||
-                (getUnitsRequested(courses) > 20))
+    private static void checkUnitsLimit(Student student, List<CourseOffering> courseOfferings) throws EnrollmentRulesViolationException {
+        if ((student.getGPA() < Constants.MIN_GPA && getUnitsRequested(courseOfferings) > Constants.MIN_UNITS) ||
+                (student.getGPA() < Constants.MID_GPA && getUnitsRequested(courseOfferings) > Constants.MID_UNITS) ||
+                (getUnitsRequested(courseOfferings) > Constants.MAX_UNITS))
             throw new EnrollmentRulesViolationException(
                     String.format("Number of units (%d) requested does not match GPA of %f",
-                            getUnitsRequested(courses), s.getGPA()));
+                            getUnitsRequested(courseOfferings), student.getGPA()));
     }
 }
