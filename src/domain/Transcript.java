@@ -34,4 +34,12 @@ public class Transcript {
 
         return points / totalsUnits;
     }
+
+    public boolean hasPassed(CourseOffering course) {
+        for (Map.Entry<Term, StudentTerm> term : transcript.entrySet())
+            if (term.getValue().hasCourse(course.getCourse()))
+                return true;
+
+        return false;
+    }
 }

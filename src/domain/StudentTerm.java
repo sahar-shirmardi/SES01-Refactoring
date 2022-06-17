@@ -20,21 +20,27 @@ public class StudentTerm {
 
     public int getUnits() {
         int units = 0;
-        for(TakenCourse takenCourse : takenCourses) {
-            if (takenCourse.status == TakenCourseStatus.GRADED) {
+        for (TakenCourse takenCourse : takenCourses)
+            if (takenCourse.status == TakenCourseStatus.GRADED)
                 units += takenCourse.getCourse().getUnits();
-            }
-        }
+
         return units;
     }
 
     public double getWeightedSumOfGrades() {
         double sum = 0;
-        for(TakenCourse takenCourse : takenCourses) {
-            if (takenCourse.status == TakenCourseStatus.GRADED) {
+        for (TakenCourse takenCourse : takenCourses)
+            if (takenCourse.status == TakenCourseStatus.GRADED)
                 sum += takenCourse.getGrade() * takenCourse.getCourse().getUnits();
-            }
-        }
+
         return sum;
+    }
+
+    public boolean hasCourse(Course course) {
+        for (TakenCourse takenCourse : takenCourses)
+            if(takenCourse.getCourse().equals(course))
+                return true;
+
+        return false;
     }
 }
